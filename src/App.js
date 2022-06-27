@@ -1,11 +1,17 @@
 import "./styles.css";
+import Container from "react-bootstrap/Container";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Button } from "react-bootstrap";
-import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
+import data from "./data.js";
+import { useState } from "react";
 
 export default function App() {
+  let [shoes] = useState(data);
+
   return (
     <div className="App">
       <Navbar bg="dark" variant="dark">
@@ -19,6 +25,27 @@ export default function App() {
         </Container>
       </Navbar>
       <div className="main-bg"></div>
+      <Container>
+        <Row>
+          {shoes.map(function (a, i) {
+            return (
+              <Col>
+                <img
+                  src={
+                    "https://codingapple1.github.io/shop/shoes" +
+                    (i + 1) +
+                    ".jpg"
+                  }
+                  width="80%"
+                />
+                <h4>{shoes[i].title}</h4>
+                <p>{shoes[i].content}</p>
+                <p>{shoes[i].price}</p>
+              </Col>
+            );
+          })}
+        </Row>
+      </Container>
     </div>
   );
 }
