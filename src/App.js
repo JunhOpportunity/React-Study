@@ -6,11 +6,17 @@ import { useEffect, useState } from "react";
 import { Routes, Route, Link, useNavigate, Outlet } from "react-router-dom";
 import Detail from "./detail.js";
 import axios from "axios";
+import Cart from "./pages/Cart.js";
+import { addCart } from "./store";
+import { useDispatch } from "react-redux";
 
 export default function App() {
   let [shoes, setShoes] = useState(data);
   let navigate = useNavigate();
   let [count, setCount] = useState(0);
+  let [탭, 탭변경] = useState(0);
+  let [another, setAnother] = useState(0);
+  let dispatch = useDispatch();
 
   return (
     <div className="App">
@@ -42,9 +48,17 @@ export default function App() {
             <Nav.Link
               onClick={() => {
                 navigate("/event");
+                setAnother(another + 1);
               }}
             >
               Event
+            </Nav.Link>
+            <Nav.Link
+              onClick={() => {
+                navigate("/cart");
+              }}
+            >
+              Cart
             </Nav.Link>
           </Nav>
         </Container>
@@ -56,6 +70,14 @@ export default function App() {
           element={
             <div>
               Main 페이지임
+              <button
+                onClick={() => {
+                  console.log(shoes[1]);
+                  dispatch(addCart(shoes[1]));
+                }}
+              >
+                장바구니
+              </button>
               <div className="main-bg"></div>
               <div>
                 {shoes.map(function (a, i) {
@@ -100,6 +122,41 @@ export default function App() {
               >
                 버튼
               </button>
+              <div>
+                <Nav variant="tabs" defaultActiveKey="link0">
+                  <Nav.Item>
+                    <Nav.Link
+                      onClick={() => {
+                        탭변경(0);
+                      }}
+                      eventKey="link0"
+                    >
+                      버튼0
+                    </Nav.Link>
+                  </Nav.Item>
+                  <Nav.Item>
+                    <Nav.Link
+                      onClick={() => {
+                        탭변경(1);
+                      }}
+                      eventKey="link1"
+                    >
+                      버튼1
+                    </Nav.Link>
+                  </Nav.Item>
+                  <Nav.Item>
+                    <Nav.Link
+                      onClick={() => {
+                        탭변경(2);
+                      }}
+                      eventKey="link2"
+                    >
+                      버튼2
+                    </Nav.Link>
+                  </Nav.Item>
+                </Nav>
+              </div>
+              <TabBtn 탭={탭} />
             </div>
           }
         />
@@ -168,19 +225,31 @@ export default function App() {
             element={<div>about 안의 location 페이지임</div>}
           />
         </Route>
-        <Route path="/event" element={<Event></Event>}>
+        <Route path="/event" element={<Event another={another}></Event>}>
           <Route path="one" element={<div>첫 주문시 양배추즙 서비스</div>} />
           <Route path="two" element={<div>생일기념 쿠폰받기</div>} />
         </Route>
         <Route path="*" element={<div>404 NOT FOUND - 없는 페이지</div>} />
+        <Route path="/cart" element={<Cart />}></Route>
       </Routes>
     </div>
   );
 }
 
-function Event() {
+function Event(props) {
+  let [fade, setFade] = useState("");
+  useEffect(() => {
+    let a = setTimeout(() => {
+      setFade("end");
+    }, 10);
+
+    return () => {
+      setFade("");
+    };
+  }, [props.another]);
+
   return (
-    <div>
+    <div className={"start " + fade}>
       <h4>무슨 내용이 들어갈까요?</h4>
       <Outlet></Outlet>
       <inputCode />
@@ -188,8 +257,34 @@ function Event() {
   );
 }
 
-function Tab({ t }) {
-  [<div>내용</div>, <div>내용</div>, <div>내용</div>][t];
+function TabBtn(props) {
+  // if (props.탭 == 0) {
+  //   return <div>내용0</div>;
+  // } else if (props.탭 == 1) {
+  //   return <div>내용1</div>;
+  // } else if (props.탭 == 2) {
+  //   return <div>내용2</div>;
+  // }
+  let [fade, setFade] = useState("");
+  useEffect(() => {
+    let a = setTimeout(() => {
+      setFade("end");
+    }, 10);
+
+    return () => {
+      setFade("");
+    };
+  }, [props.탭]);
+
+  return (
+    <div className={"start " + fade}>
+      {[<div>내용0</div>, <div>내용1</div>, <div>내용2</div>][props.탭]}
+    </div>
+  );
+}
+
+function Tab(props) {
+  [<div>내용</div>, <div>내용</div>, <div>내용</div>][props.탭];
 }
 
 // 아래 코드가 input 한 ㅏ만들고 거기에 유저가 숫자 말고 다른거 입력할 때 마다 console.log에 출력하는 코드다.

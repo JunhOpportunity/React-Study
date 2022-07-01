@@ -10,3 +10,14 @@
   background-position: center;
   /* background-color: gray; */
 }
+
+.start {
+  opacity: 0;
+  transform: scale(0);
+}
+
+.end {
+  opacity: 1;
+  transform: scale(1);
+  transition: opacity 300ms linear;
+}
