@@ -25,7 +25,7 @@ let newData = createSlice({
   ],
   reducers: {
     increase(state, action) {
-      state.find((x) => x.id == action.payload).count += 1;
+      state.find((x) => x.id == action.payload).count++;
       // state[action.payload].count += 1;
     },
     addCart(state, action) {

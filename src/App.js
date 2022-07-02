@@ -2,15 +2,36 @@ import "./styles.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Button, Container, Nav, Navbar, Row, Col } from "react-bootstrap";
 import data from "./data.js";
-import { useEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import { Routes, Route, Link, useNavigate, Outlet } from "react-router-dom";
-import Detail from "./detail.js";
+// import Detail from "./detail.js";
 import axios from "axios";
-import Cart from "./pages/Cart.js";
+// import Cart from "./pages/Cart.js";
 import { addCart } from "./store";
 import { useDispatch } from "react-redux";
+import { useQuery } from "react-query";
+
+// 나중에 load
+const Detail = lazy(() => import("./detail.js"));
+const Cart = lazy(() => import("./pages/Cart.js"));
 
 export default function App() {
+  useEffect(() => {
+    localStorage.setItem("watched", JSON.stringify([]));
+  }, []);
+
+  let result = useQuery("작명", () => {
+    return axios
+      .get("https://codingapple1.github.io/userdata.json")
+      .then((a) => {
+        return a.data;
+      });
+  });
+
+  result.data;
+  result.isLoading;
+  result.error;
+
   let [shoes, setShoes] = useState(data);
   let navigate = useNavigate();
   let [count, setCount] = useState(0);
@@ -82,7 +103,20 @@ export default function App() {
               <div>
                 {shoes.map(function (a, i) {
                   return (
-                    <Col>
+                    <Col
+                      onClick={() => {
+                        let watched = localStorage.getItem("watched");
+                        watched = JSON.parse(watched);
+                        watched.push(a.id);
+                        // 다시 array로 바꾸기
+                        watched = new Set(watched); // new Set을 이용해 중복 제거
+                        watched = Array.from(watched); // 중복 제거 후 다시 배열로
+                        localStorage.setItem(
+                          "watched",
+                          JSON.stringify(watched)
+                        );
+                      }}
+                    >
                       <img
                         src={
                           "https://codingapple1.github.io/shop/shoes" +
@@ -230,7 +264,14 @@ export default function App() {
           <Route path="two" element={<div>생일기념 쿠폰받기</div>} />
         </Route>
         <Route path="*" element={<div>404 NOT FOUND - 없는 페이지</div>} />
-        <Route path="/cart" element={<Cart />}></Route>
+        <Route
+          path="/cart"
+          element={
+            <Suspense fallback={<div></div>}>
+              <Cart />
+            </Suspense>
+          }
+        ></Route>
       </Routes>
     </div>
   );

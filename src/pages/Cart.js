@@ -2,6 +2,11 @@ import { current } from "@reduxjs/toolkit";
 import { Table } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { changeName, increase, addCart } from "../store";
+import { memo, useState } from "react";
+
+let Child = memo(function () {
+  return <div>자식임</div>;
+});
 
 function Cart() {
   let newData = useSelector((state) => {
@@ -9,9 +14,10 @@ function Cart() {
   });
   let state = useSelector((state) => state);
   let dispatch = useDispatch();
-
+  npx create-react-app 프로젝트명 --template cra-template-pwa
   return (
     <div>
+      <Child></Child>
       {state.user}의 바구니
       <Table>
         <thead>
