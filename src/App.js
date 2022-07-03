@@ -2,7 +2,14 @@ import "./styles.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Button, Container, Nav, Navbar, Row, Col } from "react-bootstrap";
 import data from "./data.js";
-import { lazy, Suspense, useEffect, useState } from "react";
+import {
+  lazy,
+  Suspense,
+  useEffect,
+  useState,
+  useTransition,
+  useDeferredValue
+} from "react";
 import { Routes, Route, Link, useNavigate, Outlet } from "react-router-dom";
 // import Detail from "./detail.js";
 import axios from "axios";
@@ -19,6 +26,9 @@ export default function App() {
   useEffect(() => {
     localStorage.setItem("watched", JSON.stringify([]));
   }, []);
+
+  // let [isPending, startTransition] = useTransition();
+  // let late = useDeferredValue(Cart);
 
   let result = useQuery("작명", () => {
     return axios
